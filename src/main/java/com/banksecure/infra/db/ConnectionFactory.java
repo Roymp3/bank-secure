@@ -5,7 +5,7 @@ public class ConnectionFactory {
 public Connection getConnection(){
 
     try {
-        return DriverManager.getConnection("jdbc:h2:~/banksecure_db;AUTO_SERVER=TRUE", "sa", "");
+        return DriverManager.getConnection("jdbc:h2:mem://localhost/test");
     } catch (SQLException e) {
         throw new RuntimeException(e);
     
