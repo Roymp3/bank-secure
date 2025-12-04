@@ -1,4 +1,5 @@
 package com.banksecure.domain;
+
 import java.math.BigDecimal;
 
 
@@ -21,10 +22,10 @@ public class Seguro {
     public String toString() {
         return "Seguro{" +
                 "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", cobertura=" + cobertura +
-                ", valorBase=" + valorBase +
+                ", Título='" + titulo + '\'' +
+                ", Descricao='" + descricao + '\'' +
+                ", Cobertura=" + cobertura +
+                ", Valor Prêmio base=" + valorBase +
                 '}';
     }
      public Long getId() {
