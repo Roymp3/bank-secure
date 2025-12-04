@@ -54,9 +54,19 @@ public class ClienteDAO {
     }
 
     public void save(Cliente cliente) {
-        if (cliente == null) return;
 
         try {
+            if(cliente.getNome() == null || cliente.getNome().trim().isEmpty()
+                    || cliente.getCpf() == null || cliente.getCpf().trim().isEmpty()
+                    || cliente.getDataNascimento() == null) {
+                throw new DadosInvalidosException("Dados invalidos: os campos do Cliente não podem ser vazios ou negativos.");
+            }
+            if(cliente.getDataNascimento().isAfter(LocalDate.now())) {
+                throw new DadosInvalidosException("Data de nascimento inválida: não pode ser no futuro.");
+            }
+            if(cliente.getCpf().trim().isEmpty() || cliente.getCpf().length() != 11 || !cliente.getCpf().matches("\\d{11}")) {
+                throw new DadosInvalidosException("CPF inválido: O cpf deve ter 11 digitos.");
+            }
 
             String sql = "INSERT INTO clientes (nome, cpf, data_nascimento)" +
                     " VALUES ( ?, ?, ?)";

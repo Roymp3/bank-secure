@@ -15,7 +15,6 @@ import java.sql.SQLOutput;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(MockitoExtension.class)
 public class SeguroDAOtest {
 
     @BeforeEach
@@ -67,7 +66,7 @@ public class SeguroDAOtest {
         DadosInvalidosException e = assertThrows(DadosInvalidosException.class, () -> {
             dao.save(seguroInvalido);
         });
-        
+
         assertEquals("Dados invalidos: campos não podem ser vazios ou negativos.", e.getMessage());
     }
 
