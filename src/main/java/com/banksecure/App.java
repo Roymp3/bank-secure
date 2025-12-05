@@ -1,4 +1,4 @@
-package com.banksecure.app;
+package com.banksecure;
 
 import java.util.Scanner;
 
