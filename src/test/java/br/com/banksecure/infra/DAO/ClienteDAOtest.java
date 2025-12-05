@@ -1,10 +1,8 @@
 package br.com.banksecure.infra.DAO;
 
 import com.banksecure.domain.Cliente;
-import com.banksecure.exception.BancoVazioException;
 import com.banksecure.exception.DadosInvalidosException;
 import com.banksecure.infra.DAO.ClienteDAO;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

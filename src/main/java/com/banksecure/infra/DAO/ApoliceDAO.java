@@ -4,6 +4,7 @@ import com.banksecure.domain.Apolice;
 import com.banksecure.exception.DadosInvalidosException;
 import com.banksecure.exception.EstruturaBancoException;
 import com.banksecure.infra.db.ConnectionFactory;
+import com.banksecure.service.ApoliceService;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -12,9 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApoliceDAO {
+
+    private ApoliceService apoliceService;
     private Connection con = new ConnectionFactory().getConnection();
 
     public ApoliceDAO() {
+        this.apoliceService = new ApoliceService();
         this.createTable();
     }
 
@@ -57,13 +61,8 @@ public class ApoliceDAO {
     }
 
     public void save(Apolice apolice) {
-        if (apolice == null){
-            throw new IllegalArgumentException("Apolice vazia!");
-        }
 
-        if (apolice.getCliente_id() == null || apolice.getSeguro_id() == null || apolice.getFuncionario_id() == null || apolice.getValorFinal() == null || apolice.getDataInicio() == null || apolice.getDataFim() == null) {
-            throw new DadosInvalidosException("Dados da apólice incompleto");
-        }
+        apoliceService.validarApoliceDAO(apolice);
 
         try{
             String sqlInsert = "INSERT INTO apolice (cliente_id, seguro_id, funcionario_id, valorFinal, dataInicio, dataFim) VALUES (?, ?, ?, ?, ?, ?)";
