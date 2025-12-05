@@ -1,4 +1,4 @@
-package com.banksecure;
+package com.banksecure.app;
 
 import java.util.Scanner;
 
@@ -15,7 +15,8 @@ public class App {
             System.out.println("2 - cotacao");
             System.out.println("3 - clientes");
             System.out.println("4 - seguros");
-            System.out.println("5 - sair");
+            System.out.println("5 - dashboard");
+            System.out.println("6 - sair");
             System.out.println("\nselecione a opção desejada");
             opc = sc.nextInt();
 
@@ -29,9 +30,18 @@ public class App {
                         System.out.println("\nselecione a opção desejada");
                         opc2 = sc.nextInt();
                     }while (opc2 != 2);
+                case 5:
+                    int opc5;
+                    do {
+                        Dashboard dash = new Dashboard();
+                        dash.exibirDashboard();
+                        System.out.println("2 - voltar");
+                        opc5 = sc.nextInt();
+
+                    }while(opc5 != 2);
             }
 
-        } while (opc !=5);
+        } while (opc !=6);
 
     }
 }
