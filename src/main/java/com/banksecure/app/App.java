@@ -34,8 +34,12 @@ public class App {
                     int opc5;
                     do {
                         Dashboard dash = new Dashboard();
+                        System.out.println("" +
+                                "********************************************************************" +
+                                "\n**************************** Dashboard *****************************" +
+                                "\n********************************************************************");
                         dash.exibirDashboard();
-                        System.out.println("2 - voltar");
+                        System.out.println("\n2 - voltar");
                         opc5 = sc.nextInt();
 
                     }while(opc5 != 2);
