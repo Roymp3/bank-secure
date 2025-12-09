@@ -79,4 +79,18 @@ public class Apolice {
                 ", dataFim=" + dataFim +
                 ']' + '\n';
     }
+
+    public String mostrarDadosDaApolice(){
+        StringBuilder dados = new StringBuilder();
+        dados.append("================== Dados da apolice ===================");
+        dados.append("Apolice ID: " + id + "\n");
+        dados.append("Cliente ID: " + cliente_id + "\n");
+        dados.append("Seguro ID: " + seguro_id + "\n");
+        dados.append("Funcionario ID: " + funcionario_id + "\n");
+        dados.append("Valor Final: " + valorFinal + "\n");
+        dados.append("Data de Inicio da apolice: " + dataInicio + "\n");
+        dados.append("Data de fim da apolice: " + dataFim + "\n");
+
+        return dados.toString();
+    }
 }

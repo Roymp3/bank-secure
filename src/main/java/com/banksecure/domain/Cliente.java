@@ -25,6 +25,27 @@ public class Cliente {
         this.dataNascimento = dataNascimento;
     }
 
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", dataNascimento=" + dataNascimento +
+                '}';
+    }
+
+    public String mostrarDadosDoCliente(){
+        StringBuilder dados = new StringBuilder();
+        dados.append("================== Dados do cliente ===================");
+        dados.append("id: " + id + "\n");
+        dados.append("Nome: " + nome + "\n");
+        dados.append("CPF: " + cpf + "\n");
+        dados.append("Data de Nascimento: " + dataNascimento + "\n");
+
+        return dados.toString();
+    }
+
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
     public String getNome() {return nome;}
@@ -33,8 +54,5 @@ public class Cliente {
     public void setCpf(String cpf) {this.cpf = cpf;}
     public LocalDate getDataNascimento() {return dataNascimento;}
     public void setDataNascimento(LocalDate dataNascimento) {this.dataNascimento = dataNascimento;}
-
-    @java.lang.Override
-    public java.lang.String toString() {return "Cliente{" + "id=" + id + ", nome='" + nome + '\'' + ", cpf='" + cpf + '\'' + ", dataNascimento=" + dataNascimento + '}';}
 }
 

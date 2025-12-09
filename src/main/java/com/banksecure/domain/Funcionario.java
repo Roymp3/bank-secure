@@ -39,5 +39,15 @@ public class Funcionario {
     public String toString(){
         return "Funcionario{id=" + id + ", usuario='" + usuario + "', senha='" + senha + "'}";
     }
+
+    public String mostrarDadosDoFuncionario(){
+        StringBuilder dados = new StringBuilder();
+        dados.append("================== Dados do funcionario ===================");
+        dados.append("id: " + id + "\n");
+        dados.append("Usuario: " + usuario + "\n");
+        dados.append("Senha: " + senha + "\n");
+
+        return dados.toString();
+    }
     
 }
