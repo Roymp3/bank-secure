@@ -1,6 +1,7 @@
 package com.banksecure.infra.DAO;
 
 import com.banksecure.domain.Seguro;
+import com.banksecure.enums.TipoDeSeguroEnum;
 import com.banksecure.exception.BancoVazioException;
 import com.banksecure.exception.DadosInvalidosException;
 import com.banksecure.exception.EstruturaBancoException;
@@ -24,19 +25,19 @@ public class SeguroDAO {
     public void popularRegistros(){
         try{
             Seguro seguro1 = new Seguro(
-              "Seguro de vida",
+                    TipoDeSeguroEnum.SEGURO_VIDA,
               "Cobertura completa de R$200.000,00 para segurança de vida",
               new BigDecimal("200000"),
               new BigDecimal("70")
         );
             Seguro seguro2 = new Seguro(
-              "Seguro residencial",
+                    TipoDeSeguroEnum.SEGURO_RESIDENCIAL,
               "Cobertura de R$300.000,00 para danos à residência: casa, Av dos Estados, 678 (cep: 09092-300)",
               new BigDecimal("300000"),
               new BigDecimal("55")
         );
             Seguro seguro3 = new Seguro(
-              "Seguro de automovél",
+                    TipoDeSeguroEnum.SEGURO_AUTO,
               "Cobertura de R$20.000,00 para danos ao veículo: Kwid, ABC-1234",
               new BigDecimal("20000"),
               new BigDecimal("100")
@@ -55,7 +56,7 @@ public class SeguroDAO {
         String sqlTabelaSeguro = """
             CREATE TABLE IF NOT EXISTS seguro (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            titulo VARCHAR(100) NOT NULL,
+            tipo VARCHAR(100) NOT NULL,
             descricao VARCHAR(300) NOT NULL,
             cobertura DECIMAL(15,2) NOT NULL,
             valorBase DECIMAL(10,2) NOT NULL
@@ -83,7 +84,7 @@ public class SeguroDAO {
             while (result.next()) {
                 seguros.add(new Seguro(
                         result.getLong("id"),
-                        result.getString("titulo"),
+                        TipoDeSeguroEnum.valueOf(result.getString("tipo")),
                         result.getString("descricao"),
                         result.getBigDecimal("cobertura"),
                         result.getBigDecimal("valorBase")
@@ -103,12 +104,12 @@ public class SeguroDAO {
 
         seguroService.validarSeguroDAO(seguro);
 
-        String sqlInsert = "INSERT INTO seguro (titulo, descricao, cobertura, valorBase) VALUES (?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO seguro (tipo, descricao, cobertura, valorBase) VALUES (?, ?, ?, ?)";
 
         try (Connection con = new ConnectionFactory().getConnection();
              PreparedStatement prepared = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
 
-            prepared.setString(1, seguro.getTitulo());
+            prepared.setString(1, seguro.getTipo().name());
             prepared.setString(2, seguro.getDescricao());
             prepared.setBigDecimal(3, seguro.getCobertura());
             prepared.setBigDecimal(4, seguro.getValorBase());
@@ -137,7 +138,7 @@ public class SeguroDAO {
             while (rs.next()) {
                 seguros.add(new Seguro(
                         rs.getLong("id"),
-                        rs.getString("titulo"),
+                        TipoDeSeguroEnum.valueOf(rs.getString("tipo")),
                         rs.getString("descricao"),
                         rs.getBigDecimal("cobertura"),
                         rs.getBigDecimal("valorBase")
@@ -157,13 +158,13 @@ public class SeguroDAO {
 
         seguroService.validarDeleteSeguro(seguro);
 
-        String sql = "DELETE FROM seguro WHERE id = ? AND titulo = ? AND valorBase = ?";
+        String sql = "DELETE FROM seguro WHERE id = ? AND tipo = ? AND valorBase = ?";
 
         try (Connection con = new ConnectionFactory().getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setLong(1, seguro.getId());
-            stmt.setString(2, seguro.getTitulo());
+            stmt.setString(2, seguro.getTipo().name());
             stmt.setBigDecimal(3, seguro.getValorBase());
 
             int afetados = stmt.executeUpdate();

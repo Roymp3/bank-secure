@@ -1,8 +1,10 @@
-C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\App.java
+C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\app\App.java
+C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\app\Dashboard.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\domain\Apolice.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\domain\Cliente.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\domain\Funcionario.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\domain\Seguro.java
+C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\enums\TipoDeSeguroEnum.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\exception\BancoVazioException.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\exception\DadosInvalidosException.java
 C:\Users\GAMER\Documents\bank-secure\src\main\java\com\banksecure\exception\EstruturaBancoException.java

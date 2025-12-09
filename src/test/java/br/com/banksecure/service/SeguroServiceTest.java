@@ -1,6 +1,7 @@
 package br.com.banksecure.service;
 
 import com.banksecure.domain.Seguro;
+import com.banksecure.enums.TipoDeSeguroEnum;
 import com.banksecure.exception.DadosInvalidosException;
 import com.banksecure.exception.EstruturaBancoException;
 import com.banksecure.infra.DAO.SeguroDAO;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Null;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -31,7 +33,7 @@ public class SeguroServiceTest {
     void deveValidarSeguroValidoSemChamarDAO() {
         Seguro seguroValido = new Seguro(
 
-                "Seguro Vida",
+                TipoDeSeguroEnum.SEGURO_VIDA,
                 "Cobertura total",
                 new BigDecimal("20000"),
                 new BigDecimal("100")
@@ -62,7 +64,7 @@ public class SeguroServiceTest {
     @Test
     void deveLancarErroSeDescricaoNula() {
         Seguro invalido = new Seguro(
-                "Seguro",
+                TipoDeSeguroEnum.SEGURO_AUTO,
                 null,
                 new BigDecimal("100"),
                 new BigDecimal("10")
@@ -79,7 +81,7 @@ public class SeguroServiceTest {
     @Test
     void deveLancarErroSeCoberturaNula() {
         Seguro invalido = new Seguro(
-                "Seguro",
+                TipoDeSeguroEnum.SEGURO_AUTO,
                 "Teste",
                 null,
                 new BigDecimal("10")
@@ -96,7 +98,7 @@ public class SeguroServiceTest {
     @Test
     void deveLancarErroSeValorBaseNulo() {
         Seguro invalido = new Seguro(
-                "Seguro",
+                TipoDeSeguroEnum.SEGURO_AUTO,
                 "Teste",
                 new BigDecimal("100"),
                 null
@@ -111,26 +113,9 @@ public class SeguroServiceTest {
     }
 
     @Test
-    void deveLancarErroSeTituloVazio() {
-        Seguro invalido = new Seguro(
-                "  ",
-                "Lorem ipsum",
-                new BigDecimal("100"),
-                new BigDecimal("10")
-        );
-
-        DadosInvalidosException e = assertThrows(DadosInvalidosException.class,
-                () -> seguroService.validarSeguroDAO(invalido));
-
-        assertEquals("Dados invalidos: campos não podem ser vazios ou negativos.", e.getMessage());
-
-        verifyNoInteractions(seguroDAO);
-    }
-
-    @Test
     void deveLancarErroSeDescricaoVazia() {
         Seguro invalido = new Seguro(
-                "Seguro",
+                TipoDeSeguroEnum.SEGURO_AUTO,
                 " ",
                 new BigDecimal("100"),
                 new BigDecimal("10")
@@ -147,7 +132,7 @@ public class SeguroServiceTest {
     @Test
     void deveLancarErroSeValoresNegativos() {
         Seguro invalido = new Seguro(
-                "Seguro",
+                TipoDeSeguroEnum.SEGURO_AUTO,
                 "Teste",
                 new BigDecimal("-1"),
                 new BigDecimal("10")
@@ -166,7 +151,7 @@ public class SeguroServiceTest {
 
         Seguro seguroValido = new Seguro(
                 1L,
-                "Seguro Vida",
+                TipoDeSeguroEnum.SEGURO_AUTO,
                 "Cobertura total",
                 new BigDecimal("20000"),
                 new BigDecimal("100")
@@ -195,7 +180,7 @@ public class SeguroServiceTest {
 
         Seguro seguro = new Seguro(
                 null,
-                "Seguro Vida",
+                TipoDeSeguroEnum.SEGURO_VIDA,
                 "Cobertura total",
                 new BigDecimal("20000"),
                 new BigDecimal("100")
@@ -216,7 +201,7 @@ public class SeguroServiceTest {
 
         Seguro seguro = new Seguro(
                 -1L,
-                "Seguro Vida",
+                TipoDeSeguroEnum.SEGURO_VIDA,
                 "Cobertura total",
                 new BigDecimal("20000"),
                 new BigDecimal("100")
@@ -258,7 +243,7 @@ public class SeguroServiceTest {
 
         Seguro seguro = new Seguro(
                 1L,
-                "   ",
+                null,
                 "Cobertura total",
                 new BigDecimal("20000"),
                 new BigDecimal("100")
@@ -279,7 +264,7 @@ public class SeguroServiceTest {
 
         Seguro seguro = new Seguro(
                 1L,
-                "Seguro Vida",
+                TipoDeSeguroEnum.SEGURO_VIDA,
                 "Cobertura total",
                 new BigDecimal("20000"),
                 BigDecimal.ZERO

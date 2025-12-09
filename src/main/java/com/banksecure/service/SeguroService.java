@@ -10,14 +10,14 @@ public class SeguroService {
 
     public void validarSeguroDAO(Seguro seguro) {
 
-        if(seguro.getTitulo()==null ||
+        if(seguro.getTipo() == null ||
                 seguro.getDescricao()==null ||
                 seguro.getCobertura()==null ||
                 seguro.getValorBase()==null){
             throw new EstruturaBancoException("Registros fornecidos não coincidem com a tabela Seguro");
         }
 
-        if(seguro.getTitulo().trim().isEmpty() ||
+        if(seguro.getTipo().name().trim().isEmpty() ||
                 seguro.getDescricao().trim().isEmpty() ||
                 seguro.getCobertura().compareTo(BigDecimal.ZERO)<=0 ||
                 seguro.getValorBase().compareTo(BigDecimal.ZERO)<=0){
@@ -35,7 +35,7 @@ public class SeguroService {
             throw new DadosInvalidosException("ID inválido para exclusão.");
         }
 
-        if (seguro.getTitulo() == null || seguro.getTitulo().trim().isEmpty()) {
+        if (seguro.getTipo() == null || seguro.getTipo().name().trim().isEmpty()) {
             throw new DadosInvalidosException("Título inválido para exclusão.");
         }
 

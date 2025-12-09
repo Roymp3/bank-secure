@@ -1,6 +1,8 @@
 package br.com.banksecure.infra.DAO;
 
 import com.banksecure.domain.Seguro;
+import com.banksecure.enums.TipoDeSeguroEnum;
+import com.banksecure.exception.BancoVazioException;
 import com.banksecure.exception.DadosInvalidosException;
 import com.banksecure.infra.DAO.SeguroDAO;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SeguroDAOtest {
 
@@ -30,7 +32,7 @@ public class SeguroDAOtest {
 
     @Test
     void deveSalvarUmSeguro(){
-        Seguro novoSeguro = new Seguro("Seguro de Automovél", "Cobertura para danos ao veiculo: FordKa, ABC-1234",
+        Seguro novoSeguro = new Seguro(TipoDeSeguroEnum.SEGURO_AUTO, "Cobertura para danos ao veiculo: FordKa, ABC-1234",
                 new BigDecimal("20000"),
                 new BigDecimal("100"));
         SeguroDAO dao = new SeguroDAO();
@@ -54,7 +56,7 @@ public class SeguroDAOtest {
         SeguroDAO dao = new SeguroDAO();
 
         Seguro seguroInvalido = new Seguro(null,
-                "",
+                TipoDeSeguroEnum.SEGURO_VIDA,
                 "",
                 new BigDecimal("0"),
                 new BigDecimal("-100"));
@@ -67,8 +69,28 @@ public class SeguroDAOtest {
     }
 
     @Test
+    void deveDeletarSeguroCorretamente() {
+
+        Seguro seguro = new Seguro(
+                TipoDeSeguroEnum.SEGURO_AUTO,
+                "Cobertura test",
+                new BigDecimal("10000"),
+                new BigDecimal("50")
+        );
+
+        Seguro salvo = seguroDAO.save(seguro);
+        assertNotNull(salvo.getId());
+
+        assertDoesNotThrow(() -> seguroDAO.delete(salvo));
+
+        assertThrows(BancoVazioException.class,
+                () -> seguroDAO.getById(salvo.getId()));
+    }
+
+
+    @Test
     void deveFalharAoDeletarSeguroSemId() {
-        Seguro seguroSemId = new  Seguro("Teste", "desc",
+        Seguro seguroSemId = new  Seguro(TipoDeSeguroEnum.SEGURO_AUTO, "desc",
                 new BigDecimal("10"), new BigDecimal("2"));
 
         assertThrows(DadosInvalidosException.class, () -> seguroDAO.delete(seguroSemId));
@@ -76,12 +98,12 @@ public class SeguroDAOtest {
 
     @Test
     void deveFalharAoDeletarSeguroInexistente() {
-        Seguro seguro = new Seguro("Seguro Viagem", "desc",
+        Seguro seguro = new Seguro(TipoDeSeguroEnum.SEGURO_AUTO, "desc",
                 new BigDecimal("1000"), new BigDecimal("40"));
 
         seguroDAO.save(seguro);
 
-        Seguro seguroComIdIncorreto = new  Seguro("Outro", "desc", new BigDecimal("1"), new BigDecimal("1"));
+        Seguro seguroComIdIncorreto = new  Seguro(TipoDeSeguroEnum.SEGURO_AUTO, "desc", new BigDecimal("1"), new BigDecimal("1"));
 
         seguroComIdIncorreto.setId(999L);
 
