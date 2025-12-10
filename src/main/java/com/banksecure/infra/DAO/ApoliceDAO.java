@@ -24,12 +24,13 @@ public class ApoliceDAO {
     public void popularRegistro() {
         try {
 
-            Apolice apolice = new Apolice(1L,1L,1L, new BigDecimal("200000"), LocalDate.now(), LocalDate.now().plusYears(1));
-            Apolice apolice2 = new Apolice(2L,2L,2L, new BigDecimal("15000"), LocalDate.now(), LocalDate.now().plusYears(1));
-            Apolice apolice3 = new Apolice(2L,3L,2L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1));
-            Apolice apolice4 = new Apolice(1L,1L,2L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1));
-            Apolice apolice5 = new Apolice(1L,1L,2L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1));
-            Apolice apolice6 = new Apolice(2L,3L,1L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1));
+            Apolice apolice = new Apolice(1L,1L,1L, new BigDecimal("200000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
+            Apolice apolice2 = new Apolice(2L,2L,2L, new BigDecimal("15000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
+            Apolice apolice3 = new Apolice(2L,3L,2L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
+            Apolice apolice4 = new Apolice(1L,1L,2L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
+            Apolice apolice5 = new Apolice(1L,1L,2L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
+            Apolice apolice6 = new Apolice(2L,3L,1L, new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
+            Apolice apolice7 = new Apolice(1L,1L,1L,new BigDecimal("17000"), LocalDate.now(), LocalDate.now().plusDays(30),false);
 
             this.save(apolice);
             this.save(apolice2);
@@ -37,6 +38,7 @@ public class ApoliceDAO {
             this.save(apolice4);
             this.save(apolice5);
             this.save(apolice6);
+            this.save(apolice7);
 
         } catch (Exception e) {
             throw new EstruturaBancoException("Erro ao popular tabela apolice");
@@ -53,6 +55,7 @@ public class ApoliceDAO {
                     valorFinal DECIMAL(10,2) NOT NULL,
                     dataInicio DATE NOT NULL,
                     dataFim DATE NOT NULL,
+                    renovada BOOLEAN NOT NULL,
                     CONSTRAINT fk_idCliente FOREIGN KEY (cliente_id) REFERENCES clientes(id),
                     CONSTRAINT fk_idSeguro FOREIGN KEY (seguro_id)  REFERENCES seguro(id),
                     CONSTRAINT fk_idFuncionario FOREIGN KEY (funcionario_id)  REFERENCES funcionarios(id)
@@ -71,7 +74,7 @@ public class ApoliceDAO {
 
         apoliceService.validarApoliceDAO(apolice);
 
-        String sqlInsert = "INSERT INTO apolice (cliente_id, seguro_id, funcionario_id, valorFinal, dataInicio, dataFim) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO apolice (cliente_id, seguro_id, funcionario_id, valorFinal, dataInicio, dataFim, renovada) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection con = new ConnectionFactory().getConnection();
             PreparedStatement prepared = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)){
@@ -82,6 +85,7 @@ public class ApoliceDAO {
             prepared.setBigDecimal(4, apolice.getValorFinal());
             prepared.setDate(5, Date.valueOf(apolice.getDataInicio()));
             prepared.setDate(6, Date.valueOf(apolice.getDataFim()));
+            prepared.setBoolean(7,apolice.isRenovada());
             prepared.execute();
             try (ResultSet rs = prepared.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -112,13 +116,102 @@ public class ApoliceDAO {
                                 rs.getLong("funcionario_id"),
                                 rs.getBigDecimal("valorFinal"),
                                 rs.getDate("dataInicio").toLocalDate(),
-                                rs.getDate("dataFim").toLocalDate()));
+                                rs.getDate("dataFim").toLocalDate(),
+                                rs.getBoolean("renovada")));
             }
 
             return apolices;
 
         }catch (SQLException e){
             throw new EstruturaBancoException("Erro ao buscar apólices no banco de dados");
+        }
+    }
+
+    public void renovarApolice(Apolice apoliceExistente, BigDecimal novoValorFinal, LocalDate novaDataFim){
+        Apolice novaApolice = new Apolice(
+                apoliceExistente.getCliente_id(),
+                apoliceExistente.getSeguro_id(),
+                apoliceExistente.getFuncionario_id(),
+                novoValorFinal,
+                LocalDate.now(),
+                novaDataFim,
+                false
+        );
+
+        this.save(novaApolice);
+        update(apoliceExistente.getId());
+    }
+
+    public List<Apolice> getByDueDate(){
+        String sql = "SELECT * FROM apolice WHERE dataFim = ? AND renovada = FALSE";
+        LocalDate dataVencimento = LocalDate.now().plusDays(30);
+
+        try(
+            Connection con = new ConnectionFactory().getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql)){
+
+            stmt.setDate(1,Date.valueOf(dataVencimento));
+
+            try(ResultSet rs = stmt.executeQuery()) {
+                List<Apolice> apolices = new ArrayList<>();
+                while (rs.next()) {
+                    apolices.add(new Apolice(
+                            rs.getLong("id"),
+                            rs.getLong("cliente_id"),
+                            rs.getLong("seguro_id"),
+                            rs.getLong("funcionario_id"),
+                            rs.getBigDecimal("valorFinal"),
+                            rs.getDate("dataInicio").toLocalDate(),
+                            rs.getDate("dataFim").toLocalDate(),
+                            rs.getBoolean("renovada")
+                    ));
+                }
+                return apolices;
+            }
+
+        } catch (SQLException e) {
+            throw new EstruturaBancoException("Erro ao buscar apolices com vencimento em 30 dias no banco de dados");
+        }
+    }
+
+    public Apolice getById(Long id){
+        String sqlSelect = "SELECT * FROM apolice WHERE id = ?";
+
+        try (Connection con = new ConnectionFactory().getConnection();
+        PreparedStatement stmt = con.prepareStatement(sqlSelect)) {
+
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Apolice(
+                            rs.getLong("id"),
+                            rs.getLong("cliente_id"),
+                            rs.getLong("seguro_id"),
+                            rs.getLong("funcionario_id"),
+                            rs.getBigDecimal("valorFinal"),
+                            rs.getDate("dataInicio").toLocalDate(),
+                            rs.getDate("dataFim").toLocalDate(),
+                            rs.getBoolean("renovada")
+                    );
+                }else {
+                    throw new EstruturaBancoException("Apolice não encontrada: id=" + id);
+                }
+            }
+
+        }catch (SQLException e){
+            throw new EstruturaBancoException("Erro ao buscar apolices no banco de dados");
+        }
+    }
+
+    private void update(Long id){
+        String sqlUpdate = "UPDATE apolice SET renovada = TRUE WHERE id = ?";
+        try (Connection con = new ConnectionFactory().getConnection();
+        PreparedStatement stmt = con.prepareStatement(sqlUpdate)){
+
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+        }catch (SQLException e){
+            throw new DadosInvalidosException("Erro ao atualizar apolices no banco de dados");
         }
     }
 }

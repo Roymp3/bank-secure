@@ -12,8 +12,9 @@ public class Apolice {
     private BigDecimal valorFinal;
     private LocalDate dataInicio;
     private LocalDate dataFim;
+    private boolean renovada;
 
-    public Apolice(Long id, Long cliente_id, Long seguro_id, Long funcionario_id, BigDecimal valorFinal, LocalDate dataInicio, LocalDate dataFim) {
+    public Apolice(Long id, Long cliente_id, Long seguro_id, Long funcionario_id, BigDecimal valorFinal, LocalDate dataInicio, LocalDate dataFim, boolean renovada) {
         this.id = id;
         this.cliente_id = cliente_id;
         this.seguro_id = seguro_id;
@@ -21,18 +22,24 @@ public class Apolice {
         this.valorFinal = valorFinal;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
+        this.renovada = renovada;
     }
 
-    public Apolice(Long cliente_id, Long seguro_id, Long funcionario_id, BigDecimal valorFinal, LocalDate dataInicio, LocalDate dataFim) {
+    public Apolice(Long cliente_id, Long seguro_id, Long funcionario_id, BigDecimal valorFinal, LocalDate dataInicio, LocalDate dataFim, boolean renovada) {
         this.cliente_id = cliente_id;
         this.seguro_id = seguro_id;
         this.funcionario_id = funcionario_id;
         this.valorFinal = valorFinal;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
+        this.renovada = renovada;
     }
 
     public Apolice() {
+    }
+
+    public boolean isRenovada() {
+        return renovada;
     }
 
     public Long getId() {
@@ -69,14 +76,17 @@ public class Apolice {
 
     @Override
     public String toString() {
-        return "Apolice [" +
-                "id=" + id +
-                ", cliente_id=" + cliente_id +
-                ", seguro_id=" + seguro_id +
-                ", funcionario_id=" + funcionario_id +
-                ", valorFinal=" + valorFinal +
-                ", dataInicio=" + dataInicio +
-                ", dataFim=" + dataFim +
-                ']' + '\n';
+        StringBuilder sb = new StringBuilder();
+        sb.append("----------------------------\n");
+        sb.append("ID: ").append(id).append("\n");
+        sb.append("Cliente ID: ").append(cliente_id).append("\n");
+        sb.append("Seguro ID: ").append(seguro_id).append("\n");
+        sb.append("Funcionario ID: ").append(funcionario_id).append("\n");
+        sb.append("Valor: ").append(valorFinal).append("\n");
+        sb.append("Data inicio: ").append(dataInicio).append("\n");
+        sb.append("Data fim: ").append(dataFim).append("\n");
+        sb.append("Renovada: ").append(renovada).append("\n");
+        sb.append("----------------------------\n");
+        return sb.toString();
     }
 }

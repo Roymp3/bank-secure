@@ -31,7 +31,8 @@ public class ApoliceServiceTest {
                 1L,
                 new BigDecimal("1000"),
                 LocalDate.now(),
-                LocalDate.now().plusDays(30)
+                LocalDate.now().plusDays(30),
+                false
         );
     }
 
@@ -59,7 +60,8 @@ public class ApoliceServiceTest {
                 1L,
                 new BigDecimal("1000"),
                 LocalDate.now(),
-                LocalDate.now().plusDays(30)
+                LocalDate.now().plusDays(30),
+                false
         );
 
         assertThrows(DadosInvalidosException.class, () -> service.validarApoliceDAO(apoliceInvalida));

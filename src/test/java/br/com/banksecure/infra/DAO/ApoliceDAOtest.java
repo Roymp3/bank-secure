@@ -41,7 +41,7 @@ public class ApoliceDAOtest {
 
     @Test
     void deveSalvarUmaApolice(){
-        Apolice apolice = new Apolice(1L,1L,1L, new BigDecimal("200000"), LocalDate.now(), LocalDate.now().plusYears(1));
+        Apolice apolice = new Apolice(1L,1L,1L, new BigDecimal("200000"), LocalDate.now(), LocalDate.now().plusYears(1),false);
         apoliceDAO.save(apolice);
     }
 
@@ -52,12 +52,31 @@ public class ApoliceDAOtest {
 
     @Test
     void deveRetornarErroComDadosInvalidos() {
-        Apolice apolice = new Apolice(null, null, null, null, LocalDate.now(), LocalDate.now().plusYears(1));
+        Apolice apolice = new Apolice(null, null, null, null, LocalDate.now(), LocalDate.now().plusYears(1),false);
 
         DadosInvalidosException e = assertThrows(DadosInvalidosException.class, () -> {
             apoliceDAO.save(apolice);
         });
 
         assertEquals("Dados da apólice incompleto", e.getMessage());
+    }
+
+    @Test
+    void deveRetornarApolicesParaRenovar(){
+        Apolice apoliceRenovar = new Apolice(1L, 1L, 1L, new BigDecimal("200000"), LocalDate.now(), LocalDate.now().plusDays(30),false);
+        apoliceDAO.save(apoliceRenovar);
+
+        System.out.println(apoliceDAO.getByDueDate());
+
+    }
+
+    @Test
+    void deveSerPossivelRenovarUmaApolice(){
+       Apolice apoliceRenovar = new Apolice(2L, 2L, 2L, new BigDecimal("1000000"),LocalDate.now(),
+               LocalDate.now().plusDays(30),
+               false);
+       apoliceDAO.save(apoliceRenovar);
+
+       apoliceDAO.renovarApolice(apoliceRenovar, new BigDecimal("2000000"),  LocalDate.now().plusYears(1));
     }
 }
